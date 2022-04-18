@@ -20,12 +20,22 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
 playlists = sp.current_user_playlists() # get current user's playlists 
 link = "https://open.spotify.com/track/3Qcj8m6FFHhInWjjOrZRom?si=a239da07a46a4eec" #One Piece! sample song
 # below loop simply looks through each of the user's playlists and then adds it in
+my_dict = dict()
 while playlists:
     for i, playlist in enumerate(playlists['items']):
         # sp.playlist_add_items(playlist_id=playlist['id'],items=[link], position=None)
+        item = sp.playlist_tracks(playlist['id'], fields=None, limit=50, offset=0)
+        for n in range(5):
+            try:
+                k = item['items'][n]['track']['name']
+                my_dict[playlist['name']] = k
+            except:
+                pass
         print("%4d %s %s" %
               (i + 1 + playlists['offset'], playlist['uri'],  playlist['name']))
     if playlists['next']:
         playlists = sp.next(playlists)
     else:
         playlists = None
+
+print(my_dict) # this dictionary contains the playlist copies with the name of the playlist as the key
