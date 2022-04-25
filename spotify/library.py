@@ -68,7 +68,7 @@ class Library:
         query = None
         query = self.sp.track(link, market=None)
         if(query==None):
-            query = self.sp.search("track:"+name,limit=None, offset=0, type="track", market=None)
+            query = self.sp.search("track:"+name,limit=300, offset=0, type="track", market=None)
             items = list()
             for each in (query['tracks']['items']):
                 blank = each['external_urls']['spotify']
