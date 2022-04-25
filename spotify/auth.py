@@ -4,6 +4,19 @@ from spotipy.oauth2 import SpotifyOAuth
 import spotipy.util as util
 import json
 
+def run():
+    client_id = '6e0bcc879be24b1c8bff71095368e345'
+    client_secret = '98602d839f69491681956e0989fbdbb9'
+    redirect_uri = "http://localhost:4200/"
+
+    scope = 'playlist-modify-public'
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
+                                               client_secret=client_secret,
+                                               redirect_uri=redirect_uri,
+                                               scope=scope)) # authorize
+    return sp
+
+
 client_id = '6e0bcc879be24b1c8bff71095368e345'
 client_secret = '98602d839f69491681956e0989fbdbb9'
 redirect_uri = "http://localhost:4200/"
@@ -12,7 +25,7 @@ scope = 'playlist-modify-public'
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
                                                client_secret=client_secret,
                                                redirect_uri=redirect_uri,
-                                               scope=scope)) # authorize
+                                               scope=scope))  # authorize
 
 playlists = sp.current_user_playlists() # get current user's playlists 
 link = "https://open.spotify.com/track/3Qcj8m6FFHhInWjjOrZRom?si=a239da07a46a4eec" #One Piece! sample song
@@ -80,3 +93,4 @@ for each in (query['tracks']['items']):
 print(items)
 # sp.playlist_add_items(playlist_id=pint['id'], items=items, position=None)
 
+sp.auth_manager.refresh_access_token()
