@@ -13,6 +13,45 @@ def get_test_data():
         output[each[0]] = each
     return output
 
+def add_user(user_id, user_name, service):
+    conn = psycopg2.connect(
+        "dbname=postgres user=postgres host=127.0.0.1 port=5432"
+    )
+    cur = conn.cursor()
+    sql = f"INSERT INTO users(user_id, name, service) VALUES({user_id}, {user_name}, {service});"
+    cur.execute(sql)
+
+def add_playlist(plist_id, user_id, title, service, owner):
+    conn = psycopg2.connect(
+        "dbname=postgres user=postgres host=127.0.0.1 port=5432"
+    )
+    cur = conn.cursor()
+    sql = f"INSERT INTO playlists(plist_id, user_id, title, service, owner) VALUES({plist_id}, {user_id}, {title}, {service}, {owner});"
+    cur.execute(sql)
+
+def add_song(title, artist, service, url, index, plist_id):
+    conn = psycopg2.connect(
+        "dbname=postgres user=postgres host=127.0.0.1 port=5432"
+    )
+    cur = conn.cursor()
+    sql = f"INSERT INTO songs(title, artist, service, url, index, plist_id) VALUES({title}, {artist}, {service}, {url}, {index}, {plist_id});"
+    cur.execute(sql)
+
+def make_dict(results:list) -> dict:
+    my_dict = dict()
+    return my_dict
+
+def get_playlist_by_user(user_id):
+    conn = psycopg2.connect(
+        "dbname=postgres user=postgres host=127.0.0.1 port=5432"
+    )
+    cur = conn.cursor()
+    sql = f"SELECT * FROM songs, playlists, users WHERE playlists.user_id = {user_id} AND users.user_id=playlists.user_id AND songs.plist_id=playlists.plist_id ORDER BY songs.index"
+    cur.execute(sql)
+    results = cur.fetchall()
+    ''' insert subroutine to sort it into proper dictionary'''
+    return make_dict(results)
+
 
 def get_userdata():
     try:

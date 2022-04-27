@@ -41,6 +41,10 @@ def send_item():
     lib.initLib()
     return lib.playlist_dict
 
+@app.post("/add-user/")
+def stuff_2(info):
+    dao.add_user(info.user_id, info.user_name, info.service)
+
 @app.get("/spotify/{query}")
 def query_result(query: str):
     return lib.querySpotify(query)
