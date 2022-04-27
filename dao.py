@@ -1,6 +1,19 @@
 from typing import Optional
 import psycopg2
 
+def get_test_data():
+    conn = psycopg2.connect(
+        "dbname=postgres user=postgres host=127.0.0.1 port=5432"
+    )
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM "users"')
+    output = dict()
+    user = cur.fetchall()
+    for each in user:
+        output[each[0]] = each
+    return output
+
+
 def get_userdata():
     try:
         conn = psycopg2.connect(

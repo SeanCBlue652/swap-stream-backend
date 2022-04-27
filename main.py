@@ -28,6 +28,9 @@ lib = test.test()
 def read_root():
     return {"Hello": "World"}
 
+@app.get("/p")
+def stuff():
+    return dao.get_test_data()
 
 @app.get("/users/{user_id}")
 def read_item(user_id: int):
