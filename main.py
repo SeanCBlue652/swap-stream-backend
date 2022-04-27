@@ -22,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+lib = test.test()
 
 @app.get("/")
 def read_root():
@@ -35,5 +35,9 @@ def read_item(user_id: int):
 
 @app.get("/spotify")
 def send_item():
-    lib = test.test()
+    lib.initLib()
     return lib.playlist_dict
+
+@app.get("/spotify/{query}")
+def query_result(query: str):
+    return lib.querySpotify(query)

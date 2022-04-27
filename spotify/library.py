@@ -8,6 +8,13 @@ import json
 class Library:
     def __init__(self, sp: spotipy.Spotify):
         self.sp = sp
+        self.user_id = ''
+        self.user_name = ''
+        self.playlists = None
+        self.playlist_dict = dict()
+    
+    def initLib(self):
+        sp = self.sp
         self.user_id = str(sp.current_user()['id'])
         self.user_name = str(sp.current_user()['display_name'])
         self.playlists = sp.current_user_playlists()
@@ -28,7 +35,15 @@ class Library:
                 item = sp.playlist_tracks(playlist['id'], fields=None, limit=None, offset=0)
                 plist_name = str(playlist['name'])
                 entry = list()
+
+                list_entries = list()
+                list_entries.append(stack)
+                the_plist.append(entry)
+                info_dict = dict()
+                info_dict["info"] = list_entries
+                
                 entry.append(plist_name)
+                entry.append(info_dict)
                 for n in range(100):
                     try:
                         song = str(item['items'][n]['track']['name'])
@@ -40,9 +55,8 @@ class Library:
                     except:
                         pass
                 
-                list_entries = list()
-                list_entries.append(stack)
-                the_plist.append(entry)
+                 
+                
                 my_dict["info"] = list_entries
                 my_dict["playlists"] = the_plist
                 print(my_dict)
@@ -81,6 +95,24 @@ class Library:
             else:
                 return items[0]
         return query['uri']
+
+    def querySpotify(self, s_query):
+        query = self.sp.search(s_query, limit=None, offset=0,type="track", market=None)
+        items = dict()
+        playlist = list()
+        playlist.append(s_query)
+        playlist.append("Spotify")
+        for each in (query['tracks']['items']):
+            blank = each['external_urls']['spotify']
+            artist = each['artists'][0]['name']
+            entry = list()
+            entry.append(each['name'])
+            entry.append(artist)
+            entry.append(blank)
+            playlist.append(entry)
+        items["query"] = playlist
+        return items
+            
 
     def addToBase(self, plist_name): # queries a playlist and adds it with the key, frontend "add" button makes a request to invoke this
         playlist = self.search(plist_name)
