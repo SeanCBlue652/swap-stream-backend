@@ -20,6 +20,9 @@ def add_user(user_id, user_name, service):
     cur = conn.cursor()
     sql = f"INSERT INTO users(user_id, name, service) VALUES({user_id}, {user_name}, {service});"
     cur.execute(sql)
+    conn.commit()
+    cur.close()
+    conn.close()
 
 def add_playlist(plist_id, user_id, title, service, owner):
     conn = psycopg2.connect(
@@ -28,6 +31,9 @@ def add_playlist(plist_id, user_id, title, service, owner):
     cur = conn.cursor()
     sql = f"INSERT INTO playlists(plist_id, user_id, title, service, owner) VALUES({plist_id}, {user_id}, {title}, {service}, {owner});"
     cur.execute(sql)
+    conn.commit()
+    cur.close()
+    conn.close()
 
 def add_song(title, artist, service, url, index, plist_id):
     conn = psycopg2.connect(
@@ -36,6 +42,9 @@ def add_song(title, artist, service, url, index, plist_id):
     cur = conn.cursor()
     sql = f"INSERT INTO songs(title, artist, service, url, index, plist_id) VALUES({title}, {artist}, {service}, {url}, {index}, {plist_id});"
     cur.execute(sql)
+    conn.commit()
+    cur.close()
+    conn.close()
 
 def make_dict(results:list) -> dict:
     my_dict = dict()
