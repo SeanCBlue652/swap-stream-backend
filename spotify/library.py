@@ -151,4 +151,7 @@ class Library:
             except:
                 print(str(each[0]) + " could not be added to target playlist.")
         self.sp.playlist_add_items(playlist_id=this_list['id'], items=items, position=None)
+
+    def getToken(self):
+        return self.sp.auth_manager.get_access_token(False, False)
         

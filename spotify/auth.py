@@ -94,3 +94,5 @@ print(items)
 # sp.playlist_add_items(playlist_id=pint['id'], items=items, position=None)
 
 # sp.auth_manager.refresh_access_token()
+token = sp.auth_manager.get_access_token(False, False)
+print(token)

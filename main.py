@@ -45,6 +45,10 @@ def send_item():
 def stuff_2(info):
     dao.add_user(info.user_id, info.user_name, info.service)
 
+@app.get("/getAuth")
+def get_auth():
+    return {"Token":lib.getToken()}
+
 @app.get("/spotify/{query}")
 def query_result(query: str):
     return lib.querySpotify(query)
