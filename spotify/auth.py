@@ -42,6 +42,10 @@ while playlists:
     for i, playlist in enumerate(playlists['items']):
         # sp.playlist_add_items(playlist_id=playlist['id'],items=[link], position=None)
         item = sp.playlist_tracks(playlist['id'], fields=None, limit=None, offset=0)
+    
+        image = sp.playlist_cover_image(playlist['id'])
+        print(image[0]['url'])
+        
         plist_name = str(playlist['name'])
         entry = list()
         entry.append(plist_name)
@@ -74,7 +78,7 @@ while playlists:
  # this dictionary contains the playlist copies with the name of the playlist as the key
 # so far, we can retrieve all of the relevant info for swapstream through the above code
 # print(json.dumps(my_dict))
-print(sp.current_user()['id'])
+# print(sp.current_user()['id'])
 query = sp.track(link, market=None)
 # print(query['uri'])
 # print(query)

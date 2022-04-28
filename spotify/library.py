@@ -12,6 +12,7 @@ class Library:
         self.user_name = ''
         self.playlists = None
         self.playlist_dict = dict()
+        self.plist_image_url = []
     
     def initLib(self):
         sp = self.sp
@@ -33,6 +34,8 @@ class Library:
             for i, playlist in enumerate(playlists['items']):
                 # sp.playlist_add_items(playlist_id=playlist['id'],items=[link], position=None)
                 item = sp.playlist_tracks(playlist['id'], fields=None, limit=None, offset=0)
+                image = sp.playlist_cover_image(playlist['id'])
+                image_entry = image[0]['url']
                 plist_name = str(playlist['name'])
                 entry = list()
 
@@ -41,6 +44,8 @@ class Library:
                 the_plist.append(entry)
                 info_dict = dict()
                 info_dict["info"] = list_entries
+                info_dict["image"] = image_entry
+                
                 
                 entry.append(plist_name)
                 entry.append(info_dict)
