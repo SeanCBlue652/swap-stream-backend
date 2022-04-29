@@ -1,8 +1,6 @@
-
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-import spotipy.util as util
-import json
+
 
 def run():
     client_id = '6e0bcc879be24b1c8bff71095368e345'
@@ -11,9 +9,9 @@ def run():
 
     scope = 'playlist-modify-public'
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
-                                               client_secret=client_secret,
-                                               redirect_uri=redirect_uri,
-                                               scope=scope)) # authorize
+                                                   client_secret=client_secret,
+                                                   redirect_uri=redirect_uri,
+                                                   scope=scope))  # authorize
     return sp
 
 
@@ -27,8 +25,8 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
                                                redirect_uri=redirect_uri,
                                                scope=scope))  # authorize
 
-playlists = sp.current_user_playlists() # get current user's playlists 
-link = "https://open.spotify.com/track/3Qcj8m6FFHhInWjjOrZRom?si=a239da07a46a4eec" #One Piece! sample song
+playlists = sp.current_user_playlists()  # get current user's playlists
+link = "https://open.spotify.com/track/3Qcj8m6FFHhInWjjOrZRom?si=a239da07a46a4eec"  # One Piece! sample song
 # below loop simply looks through each of the user's playlists and then adds it in
 my_dict = dict()
 user_id = str(sp.current_user()['uri'])
@@ -42,10 +40,10 @@ while playlists:
     for i, playlist in enumerate(playlists['items']):
         # sp.playlist_add_items(playlist_id=playlist['id'],items=[link], position=None)
         item = sp.playlist_tracks(playlist['id'], fields=None, limit=None, offset=0)
-    
+
         image = sp.playlist_cover_image(playlist['id'])
         print(image[0]['url'])
-        
+
         plist_name = str(playlist['name'])
         entry = list()
         entry.append(plist_name)
@@ -60,7 +58,7 @@ while playlists:
                 entry.append(insertion)
             except:
                 pass
-        
+
         list_entries = list()
         list_entries.append(stack)
         the_plist.append(entry)
@@ -69,13 +67,13 @@ while playlists:
         my_dict["playlists"] = the_plist
         # print(my_dict)
         # print("%4d %s %s" %
-              # (i + 1 + playlists['offset'], playlist['uri'],  playlist['name']))
+        # (i + 1 + playlists['offset'], playlist['uri'],  playlist['name']))
     if playlists['next']:
         playlists = sp.next(playlists)
     else:
         playlists = None
 
- # this dictionary contains the playlist copies with the name of the playlist as the key
+# this dictionary contains the playlist copies with the name of the playlist as the key
 # so far, we can retrieve all of the relevant info for swapstream through the above code
 # print(json.dumps(my_dict))
 # print(sp.current_user()['id'])
@@ -92,7 +90,7 @@ for each in (query['tracks']['items']):
     blank = each['external_urls']['spotify']
     artist = each['artists'][0]['name']
     print(each['name'] + " by " + artist)
-    if(artist == "Moonshot18"):
+    if artist == "Moonshot18":
         items.append(blank)
 print(items)
 # sp.playlist_add_items(playlist_id=pint['id'], items=items, position=None)
