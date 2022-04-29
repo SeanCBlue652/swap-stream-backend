@@ -1,9 +1,8 @@
 # library object
 
-import spotipy
-from spotify.oauth2 import SpotifyOAuth
-import spotipy.util as util
 import json
+
+import spotipy
 
 
 class Library:
@@ -66,7 +65,7 @@ class Library:
                 my_dict["playlists"] = the_plist
                 print(my_dict)
                 print("%4d %s %s" %
-                      (i + 1 + playlists['offset'], playlist['uri'],  playlist['name']))
+                      (i + 1 + playlists['offset'], playlist['uri'], playlist['name']))
             if playlists['next']:
                 playlists = sp.next(playlists)
             else:
@@ -87,17 +86,17 @@ class Library:
         song_artist = song[2]
         query = None
         query = self.sp.track(link, market=None)
-        if(query == None):
+        if query is None:
             query = self.sp.search(
-                "track:"+name, limit=300, offset=0, type="track", market=None)
+                "track:" + name, limit=300, offset=0, type="track", market=None)
             items = list()
             for each in (query['tracks']['items']):
                 blank = each['external_urls']['spotify']
                 artist = each['artists'][0]['name']
                 print(each['name'] + " by " + artist)
-                if(artist == song_artist):
+                if artist == song_artist:
                     items.append(blank)
-            if(len(items) == 0):
+            if len(items) == 0:
                 return None
             else:
                 return items[0]
@@ -129,7 +128,7 @@ class Library:
 
         # Code that invokes the database service and stores the above info
 
-        return (playlist, user_id, user_name)
+        return playlist, user_id, user_name
 
     def deliver(self):
         output = list()
