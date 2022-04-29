@@ -1,7 +1,7 @@
 # library object
 
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+from spotify.oauth2 import SpotifyOAuth
 import spotipy.util as util
 import json
 
