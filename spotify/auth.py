@@ -29,21 +29,23 @@ playlists = sp.current_user_playlists()  # get current user's playlists
 link = "https://open.spotify.com/track/3Qcj8m6FFHhInWjjOrZRom?si=a239da07a46a4eec"  # One Piece! sample song
 # below loop simply looks through each of the user's playlists and then adds it in
 my_dict = dict()
-user_id = str(sp.current_user()['uri'])
+user_id = str(sp.current_user()['id'])
 user_name = str(sp.current_user()['display_name'])
 stack = dict()
 the_plist = list()
 stack["name"] = user_name
 stack["service"] = "Spotify"
 stack["id"] = user_id
+print(user_id)
+print(sp.current_user()['images'][0]['url'])
 while playlists:
     for i, playlist in enumerate(playlists['items']):
         # sp.playlist_add_items(playlist_id=playlist['id'],items=[link], position=None)
         item = sp.playlist_tracks(playlist['id'], fields=None, limit=None, offset=0)
 
         image = sp.playlist_cover_image(playlist['id'])
-        print(image[0]['url'])
-
+        # print(image[0]['url'])
+        
         plist_name = str(playlist['name'])
         entry = list()
         entry.append(plist_name)

@@ -13,7 +13,8 @@ class Library:
         self.playlists = None
         self.playlist_dict = dict()
         self.plist_image_url = []
-
+        self.profile_image = ''
+    
     def initLib(self):
         print('1')
         sp = self.sp
@@ -25,6 +26,7 @@ class Library:
         print(self.user_name)
         print('5')
         self.playlists = sp.current_user_playlists()
+        self.profile_image = sp.current_user()['images'][0]['url']
         # user_id = self.user_id
         # user_name = self.user_name
         playlists = self.playlists
@@ -52,7 +54,8 @@ class Library:
                 info_dict = dict()
                 info_dict["info"] = list_entries
                 info_dict["image"] = image_entry
-
+                info_dict["profile_image"] = self.profile_image
+                
                 entry.append(plist_name)
                 entry.append(info_dict)
                 for n in range(100):
