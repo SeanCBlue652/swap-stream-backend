@@ -15,9 +15,15 @@ class Library:
         self.plist_image_url = []
 
     def initLib(self):
+        print('1')
         sp = self.sp
+        print('2')
         self.user_id = str(sp.current_user()['id'])
+        print('3')
         self.user_name = str(sp.current_user()['display_name'])
+        print('4')
+        print(self.user_name)
+        print('5')
         self.playlists = sp.current_user_playlists()
         # user_id = self.user_id
         # user_name = self.user_name
