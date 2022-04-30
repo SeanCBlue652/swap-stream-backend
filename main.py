@@ -1,10 +1,25 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 import dao
-import test
+# import test
+import json
 
-app = FastAPI()
+from fastapi.middleware.cors import CORSMiddleware
+from spotify import library
+from spotify import auth_new
+
+
+class Handler:
+    def __init__(self):
+        self.sp = None
+        self.lib = None
+    def create(self):    
+        self.sp = auth_new.run()
+        self.lib = library.Library(self.sp)
+
+handler = Handler()
+app = FastAPI() 
+
 
 origins = [
     "http://localhost.tiangolo.com",
@@ -21,7 +36,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-lib = test.test()
+
 
 
 @app.get("/")
@@ -41,6 +56,13 @@ def read_item(user_id: int):
 
 @app.get("/spotify")
 def send_item():
+    handler.create()
+    sp = handler.sp
+    return sp.auth_manager.get_access_token(check_cache=False)
+
+@app.get("/spotify/playlists")
+def send_playlists():
+    lib = handler.lib
     lib.initLib()
     return lib.playlist_dict
 
@@ -52,9 +74,10 @@ def stuff_2(info):
 
 @app.get("/getAuth")
 def get_auth():
-    return {"Token": lib.getToken()}
 
+    return {"Token":handler.lib.getToken()}
 
 @app.get("/spotify/{query}")
 def query_result(query: str):
-    return lib.querySpotify(query)
+    return handler.lib.querySpotify(query)
+

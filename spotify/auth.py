@@ -1,5 +1,14 @@
+
+import requests
+
 import spotipy
+import os
 from spotipy.oauth2 import SpotifyOAuth
+
+from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy import CacheFileHandler
+import spotipy.util as util
+import json
 
 
 def run():
@@ -19,11 +28,23 @@ client_id = '6e0bcc879be24b1c8bff71095368e345'
 client_secret = '98602d839f69491681956e0989fbdbb9'
 redirect_uri = "http://localhost:4200/"
 
+# auth_manager= SpotifyClientCredentials
 scope = 'playlist-modify-public'
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
-                                               client_secret=client_secret,
-                                               redirect_uri=redirect_uri,
-                                               scope=scope))  # authorize
+item = CacheFileHandler()
+print(item.get_cached_token())
+username = 1225933126
+# os.remove(f".cache-{username}")
+token = util.prompt_for_user_token(username=username, client_id=client_id, client_secret=client_secret,redirect_uri=redirect_uri, scope=scope)
+
+auth_manager = SpotifyOAuth(client_id=client_id,
+                            client_secret=client_secret,
+                            redirect_uri=redirect_uri,
+                            scope=scope,
+                            open_browser=True)
+print(auth_manager)
+
+sp = spotipy.Spotify(auth_manager=auth_manager)  # authorize
+# sp = spotipy.Spotify(auth_manager=auth_manager)
 
 playlists = sp.current_user_playlists()  # get current user's playlists
 link = "https://open.spotify.com/track/3Qcj8m6FFHhInWjjOrZRom?si=a239da07a46a4eec"  # One Piece! sample song
