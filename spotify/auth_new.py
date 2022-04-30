@@ -1,10 +1,11 @@
-import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+
 import spotipy.util as util
 import webbrowser
 from spotipy import CacheFileHandler
 import json
+
 
 
 def run():

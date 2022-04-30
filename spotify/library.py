@@ -1,9 +1,9 @@
 # library object
 
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-import spotipy.util as util
 import json
+
+import spotipy
+
 
 class Library:
     def __init__(self, sp: spotipy.Spotify):
@@ -16,9 +16,15 @@ class Library:
         self.profile_image = ''
     
     def initLib(self):
+        print('1')
         sp = self.sp
+        print('2')
         self.user_id = str(sp.current_user()['id'])
+        print('3')
         self.user_name = str(sp.current_user()['display_name'])
+        print('4')
+        print(self.user_name)
+        print('5')
         self.playlists = sp.current_user_playlists()
         self.profile_image = sp.current_user()['images'][0]['url']
         # user_id = self.user_id
@@ -35,7 +41,8 @@ class Library:
         while playlists:
             for i, playlist in enumerate(playlists['items']):
                 # sp.playlist_add_items(playlist_id=playlist['id'],items=[link], position=None)
-                item = sp.playlist_tracks(playlist['id'], fields=None, limit=None, offset=0)
+                item = sp.playlist_tracks(
+                    playlist['id'], fields=None, limit=None, offset=0)
                 image = sp.playlist_cover_image(playlist['id'])
                 image_entry = image[0]['url']
                 plist_name = str(playlist['name'])
@@ -54,57 +61,59 @@ class Library:
                 for n in range(100):
                     try:
                         song = str(item['items'][n]['track']['name'])
-                        artist = str(item['items'][n]['track']['artists'][0]['name'])
+                        artist = str(item['items'][n]['track']
+                                     ['artists'][0]['name'])
                         insertion = list()
                         insertion.append(song)
                         insertion.append(artist)
                         entry.append(insertion)
                     except:
                         pass
-                
-                 
-                
+
                 my_dict["info"] = list_entries
                 my_dict["playlists"] = the_plist
                 print(my_dict)
                 print("%4d %s %s" %
-                    (i + 1 + playlists['offset'], playlist['uri'],  playlist['name']))
+                      (i + 1 + playlists['offset'], playlist['uri'], playlist['name']))
             if playlists['next']:
                 playlists = sp.next(playlists)
             else:
                 playlists = None
         self.playlist_dict = my_dict
-    
+
     def search(self, key):
         return self.playlist_dict[key]
-    
+
     ''' 
         Queries spotify for song id to add to list
         :param song: list containing song name, song link on spotify, and song artist
     '''
+
     def searchSpotify(self, song):
         link = song[1]
         name = song[0]
         song_artist = song[2]
         query = None
         query = self.sp.track(link, market=None)
-        if(query==None):
-            query = self.sp.search("track:"+name,limit=300, offset=0, type="track", market=None)
+        if query is None:
+            query = self.sp.search(
+                "track:" + name, limit=300, offset=0, type="track", market=None)
             items = list()
             for each in (query['tracks']['items']):
                 blank = each['external_urls']['spotify']
                 artist = each['artists'][0]['name']
                 print(each['name'] + " by " + artist)
-                if(artist == song_artist):
+                if artist == song_artist:
                     items.append(blank)
-            if(len(items) == 0):
+            if len(items) == 0:
                 return None
             else:
                 return items[0]
         return query['uri']
 
     def querySpotify(self, s_query):
-        query = self.sp.search(s_query, limit=None, offset=0,type="track", market=None)
+        query = self.sp.search(s_query, limit=None,
+                               offset=0, type="track", market=None)
         items = dict()
         playlist = list()
         playlist.append(s_query)
@@ -119,22 +128,22 @@ class Library:
             playlist.append(entry)
         items["query"] = playlist
         return items
-            
 
-    def addToBase(self, plist_name): # queries a playlist and adds it with the key, frontend "add" button makes a request to invoke this
+    # queries a playlist and adds it with the key, frontend "add" button makes a request to invoke this
+    def addToBase(self, plist_name):
         playlist = self.search(plist_name)
         user_id = self.user_id
         user_name = self.user_name
 
         # Code that invokes the database service and stores the above info
 
-        return (playlist, user_id, user_name)
+        return playlist, user_id, user_name
 
     def deliver(self):
         output = list()
         user = dict()
         name = dict()
-        user['user_id'] = self.user_id 
+        user['user_id'] = self.user_id
         name['name'] = self.user_name
         output.append(user)
         output.append(name)
@@ -147,9 +156,10 @@ class Library:
         :param info: the choices the user makes when adding the playlist
         :param plist: the playlist to be added as a list of lists [name, id, artist]
     '''
-    
+
     def addPlist(self, info: dict, plist: list):
-        this_list = self.sp.user_playlist_create(self.user_id, info["name"], info["public"], info["collaborative"], info["description"])
+        this_list = self.sp.user_playlist_create(
+            self.user_id, info["name"], info["public"], info["collaborative"], info["description"])
         items = list()
         for each in plist:
             try:
@@ -157,8 +167,8 @@ class Library:
                 items.append(link)
             except:
                 print(str(each[0]) + " could not be added to target playlist.")
-        self.sp.playlist_add_items(playlist_id=this_list['id'], items=items, position=None)
+        self.sp.playlist_add_items(
+            playlist_id=this_list['id'], items=items, position=None)
 
     def getToken(self):
         return self.sp.auth_manager.get_access_token(False, False)
-        
