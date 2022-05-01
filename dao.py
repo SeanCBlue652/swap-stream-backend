@@ -161,7 +161,7 @@ def get_playlist_by_display_name(username):
         password=DATABASE_PASSWORD
     )
     cur = conn.cursor()
-    sql = f"SELECT DISTINCT username, users.user_id, services, playlists.name, songs, image, pfp FROM userdata.playlists, userdata.users WHERE username LIKE '%{username}%'"
+    sql = f"SELECT DISTINCT username, users.user_id, services, playlists.name, songs, image, pfp FROM userdata.playlists, userdata.users WHERE username ~* '{username}' or name ~* '{username}'"
     print(sql)
     cur.execute(sql)
     results = cur.fetchall()
