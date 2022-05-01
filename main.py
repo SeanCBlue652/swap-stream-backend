@@ -119,3 +119,14 @@ def get_auth():
 def query_result(query: str):
     return handler.lib.querySpotify(query)
 
+@app.get("/search/user/{username}")
+def name_result(username: str):
+    return dao.get_playlist_by_display_name(username)
+
+@app.get("/search/user/playlist/{user_id}/{plist_id}")
+def id_result(user_id: int, plist_id: str):
+    return dao.get_playlist_by_id(plist_id, user_id)
+
+@app.get("/search/spotify/{user_id}")
+def sp_plist(user_id: int):
+    return dao.get_spotify_plist_id(user_id)

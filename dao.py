@@ -143,14 +143,47 @@ def get_playlist_by_id(plist_id, user_id):
         password=DATABASE_PASSWORD
     )
     cur = conn.cursor()
-    sql = f"SELECT DISTINCT username, users.user_id, services, playlists.name, songs, image, pfp FROM userdata.playlists, userdata.users WHERE plist_id = {plist_id} AND userdata.users.user_id = userdata.playlists.user_id AND userdata.users.user_id = {user_id}"
+    sql = f"SELECT DISTINCT username, users.user_id, services, playlists.name, songs, image, pfp FROM userdata.playlists, userdata.users WHERE plist_id = '{plist_id}' AND userdata.users.user_id = userdata.playlists.user_id AND userdata.users.user_id = {user_id}"
     print(sql)
     cur.execute(sql)
     results = cur.fetchall()
-    
-
 
     return format_playlists(results)
+
+def get_playlist_by_display_name(username):
+    conn = psycopg2.connect(
+        host=DATABASE_HOST,
+        database=DATABASE_NAME,
+        user=DATABASE_USER,
+        password=DATABASE_PASSWORD
+    )
+    cur = conn.cursor()
+    sql = f"SELECT DISTINCT username, users.user_id, services, playlists.name, songs, image, pfp FROM userdata.playlists, userdata.users WHERE username LIKE '%{username}%'"
+    print(sql)
+    cur.execute(sql)
+    results = cur.fetchall()
+
+    return format_playlists(results)
+
+def format_plist_id(results):
+    my_dict = dict()
+    my_dict['plist_id'] = [items[0] for items in results]
+    return my_dict
+
+def get_spotify_plist_id(user_id: int):
+    conn = psycopg2.connect(
+        host=DATABASE_HOST,
+        database=DATABASE_NAME,
+        user=DATABASE_USER,
+        password=DATABASE_PASSWORD
+    )
+    cur = conn.cursor()
+    sql = f"SELECT DISTINCT plist_id FROM userdata.playlists, userdata.users WHERE users.services = 'Spotify' AND users.user_id = {user_id}"
+    print(sql)
+    cur.execute(sql)
+    results = cur.fetchall()
+
+    return format_plist_id(results)
 
 def store_playlist(plist_id: int, user_id: int, songs: dict, name: str, image: str):
     conn = psycopg2.connect(

@@ -15,5 +15,6 @@ def testStorePlaylists():
 # print(dao.get_test_data())
 # testStorePlaylists()
 # items = dao.get_playlist_by_id(1265, 1225933126)
-items = dao.get_user(1225933126)
+# items = dao.get_user(1225933126)
+items = dao.get_playlist_by_display_name('Suhaib')
 print(items)
