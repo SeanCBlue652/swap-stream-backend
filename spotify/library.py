@@ -113,6 +113,28 @@ class Library:
                 return items[0]
         return query['uri']
 
+    def subQuerySpotify(self, s_query):
+        return self.sp.search(s_query, limit=None, offset=0, type="track", market=None)
+    
+    def findSongByNameAndArtist(self, name, artist):
+        track = name
+        track.replace(" ", "%20")
+        track_artist = artist
+        track_artist.replace(" ", "%20")
+        s_query = f"track:{name} artist:{track_artist}"
+        return self.subQuerySpotify(s_query)['tracks']['items'][0]['external_urls']['spotify']
+
+    def addQueryTrackToList(self, this_list, result):
+        this_list.append(result)
+        return this_list
+
+    def getDevices(self, sp):
+        print(sp.auth_manager.get_access_token())
+        return sp.devices()
+
+    def playSong(self, url):
+        return url
+
     def querySpotify(self, s_query):
         query = self.sp.search(s_query, limit=None,
                                offset=0, type="track", market=None)
@@ -158,6 +180,30 @@ class Library:
         :param info: the choices the user makes when adding the playlist
         :param plist: the playlist to be added as a list of lists [name, id, artist]
     '''
+
+    def addPlistCopy(self, name: str, plist: list):
+        this_list = self.sp.user_playlist_create(
+            self.sp.current_user()['id'], name,
+            public=True,
+            collaborative=False,
+            description=''
+        )
+        self.sp.playlist_add_items(
+            playlist_id=this_list['id'], items=plist, position=None)
+
+    def copyPlaylist(self, name: str, plist: list):
+        items = list()
+        for each in plist:
+            try:
+                result = self.findSongByNameAndArtist(each[0], each[1])
+                items.append(result)
+            except:
+                pass
+        if len(items):
+            self.addPlistCopy(name, items)
+        else:
+            raise Exception("Playlist was not created.")
+
 
     def addPlist(self, name: str, plist: list):
         this_list = self.sp.user_playlist_create(

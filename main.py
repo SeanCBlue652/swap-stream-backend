@@ -18,6 +18,7 @@ class Playlist(BaseModel):
     name: str
     image: str
 
+
 class CreatePlaylist(BaseModel):
     name: str
     songs: list
@@ -76,9 +77,16 @@ def read_item(user_id: int):
 def add_playlists(item: CreatePlaylist):
     handler.create()
     lib = handler.lib
-    lib.initLib()
+    # lib.initLib()
     lib.addPlist(item.name, item.songs)
     return item
+
+@app.post("/spotify/add/copy")
+def add_playlist_copy(item: CreatePlaylist):
+    handler.create()
+    lib = handler.lib
+    lib.copyPlaylist(item.name, item.songs)
+    return item 
 
 @app.get("/spotify")
 def send_item():
@@ -117,6 +125,7 @@ def get_auth():
 
 @app.get("/spotify/{query}")
 def query_result(query: str):
+    handler.create()
     return handler.lib.querySpotify(query)
 
 @app.get("/all-playlists/")

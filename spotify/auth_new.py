@@ -8,12 +8,12 @@ import json
 
 
 
-def run():
+def run(scope='playlist-modify-public'):
     client_id = '6e0bcc879be24b1c8bff71095368e345'
     client_secret = '98602d839f69491681956e0989fbdbb9'
     redirect_uri = "http://localhost:8000"
 
-    scope = 'playlist-modify-public'
+    # scope = 'playlist-modify-public'
     handler = CacheFileHandler()
     
     auth_manager = SpotifyOAuth(client_id=client_id,

@@ -211,7 +211,18 @@ def store_playlist(plist_id: int, user_id: int, songs: dict, name: str, image: s
         password=DATABASE_PASSWORD
     )
     cur = conn.cursor()
-    insertion = json.dumps(songs)
+    insert_songs = list()
+    for each in songs['songs']:
+        this_list = list()
+        new_string = each[0].replace('\'', '\'\'')
+        this_list.append(new_string)
+        this_list.append(each[1])
+        insert_songs.append(this_list)
+        print(each[0])
+    print(insert_songs)
+    new_dict = dict()
+    new_dict['songs'] = insert_songs
+    insertion = json.dumps(new_dict)
     sql = f"INSERT INTO userdata.playlists(plist_id, user_id, songs, name, image) VALUES('{plist_id}',{user_id}, '{insertion}','{name}','{image}');"
     cur.execute(sql)
     conn.commit()
