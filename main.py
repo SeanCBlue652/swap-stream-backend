@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from pydantic import BaseModel
 import dao
 # import test
 import json
@@ -8,6 +8,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from spotify import library
 from spotify import auth_new
 
+class Item(BaseModel):
+    test: str
+
+class Playlist(BaseModel):
+    name: str
+    songs: list
+
+class User(BaseModel):
+    user_id: int
+    user_name: str
+    service: str
 
 class Handler:
     def __init__(self):
@@ -51,14 +62,26 @@ def stuff():
 
 @app.get("/users/{user_id}")
 def read_item(user_id: int):
-    return dao.get_userdata()
+    return dao.get_user(user_id)
 
+@app.post("/spotify/add")
+def add_playlists(item: Playlist):
+    handler.create()
+    lib = handler.lib
+    lib.initLib()
+    lib.addPlist(item.name, item.songs)
+    return item
 
 @app.get("/spotify")
 def send_item():
     handler.create()
     sp = handler.sp
-    return sp.auth_manager.get_access_token(check_cache=False)
+    items = dict()
+    items['token'] = sp.auth_manager.get_access_token(check_cache=False)
+    items['user'] = sp.current_user()['id']
+    items['service'] = 'Spotify'
+    items['username'] = sp.current_user()['display_name']
+    return items
 
 @app.get("/spotify/playlists")
 def send_playlists():
@@ -68,9 +91,9 @@ def send_playlists():
 
 
 @app.post("/add-user/")
-def stuff_2(info):
+def stuff_2(info: User):
     dao.add_user(info.user_id, info.user_name, info.service)
-
+    return info
 
 @app.get("/getAuth")
 def get_auth():

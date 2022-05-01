@@ -26,6 +26,7 @@ class Library:
         print(self.user_name)
         print('5')
         self.playlists = sp.current_user_playlists()
+        print(self.playlists)
         self.profile_image = sp.current_user()['images'][0]['url']
         # user_id = self.user_id
         # user_name = self.user_name
@@ -157,13 +158,19 @@ class Library:
         :param plist: the playlist to be added as a list of lists [name, id, artist]
     '''
 
-    def addPlist(self, info: dict, plist: list):
+    def addPlist(self, name: str, plist: list):
         this_list = self.sp.user_playlist_create(
-            self.user_id, info["name"], info["public"], info["collaborative"], info["description"])
+            self.sp.current_user()['id'], name, 
+            public=True, 
+            collaborative=False, 
+            description=''
+        )
         items = list()
         for each in plist:
+            items.append(each[2])
+        for each in plist:
             try:
-                link = self.searchSpotify(each)
+                link = self.searchSpotify(each[2])
                 items.append(link)
             except:
                 print(str(each[0]) + " could not be added to target playlist.")
