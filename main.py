@@ -26,6 +26,7 @@ class User(BaseModel):
     user_id: int
     user_name: str
     service: str
+    pfp: str
 
 class Handler:
     def __init__(self):
@@ -88,6 +89,7 @@ def send_item():
     items['user'] = sp.current_user()['id']
     items['service'] = 'Spotify'
     items['username'] = sp.current_user()['display_name']
+    items['pfp'] = sp.current_user()['images'][0]['url']
     return items
 
 @app.get("/spotify/playlists")
@@ -105,7 +107,7 @@ def post_playlist(playlist: Playlist):
 
 @app.post("/add-user/")
 def stuff_2(info: User):
-    dao.add_user(info.user_id, info.user_name, info.service)
+    dao.add_user(info.user_id, info.user_name, info.service, info.pfp)
     return info
 
 @app.get("/getAuth")

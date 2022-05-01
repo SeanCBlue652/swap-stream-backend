@@ -35,14 +35,14 @@ def get_test_data():
             print('Database connection closed.')
 
 
-def add_user(user_id, user_name, service):
+def add_user(user_id, user_name, service, pfp):
     conn = psycopg2.connect(
         host=DATABASE_HOST,
         database=DATABASE_NAME,
         user=DATABASE_USER,
         password=DATABASE_PASSWORD)
     cur = conn.cursor()
-    sql = f"INSERT INTO userdata.users(user_id, username, services) VALUES({user_id}, '{user_name}', '{service}');"
+    sql = f"INSERT INTO userdata.users(user_id, username, services, pfp) VALUES({user_id}, '{user_name}', '{service}', '{pfp}');"
     cur.execute(sql)
     conn.commit()
     cur.close()
