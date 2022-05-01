@@ -116,23 +116,26 @@ def get_playlist_by_user(user_id):
     return results
 
 def format_playlists(results):
-    item = results[0]
+    res = results
     retval = dict()
     info = dict()
     entry = list()
     piece = dict()
-    piece['name'] = item[0]
-    piece['id'] = item[1]
-    piece['service'] = item[2]
-    entry.append(piece)
-    info['info'] = entry
-    info['image'] = item[5]
-    info['profile_image'] = item[6]
-    song_list = list()
-    song_list.append(item[3])
-    song_list.append(info)
-    song_list += item[4]['songs']
-    retval['playlists'] = song_list 
+    lists = list()
+    for item in res:
+        piece['name'] = item[0]
+        piece['id'] = item[1]
+        piece['service'] = item[2]
+        entry.append(piece)
+        info['info'] = entry
+        info['image'] = item[5]
+        info['profile_image'] = item[6]
+        song_list = list()
+        song_list.append(item[3])
+        song_list.append(info)
+        song_list += item[4]['songs']
+        lists.append(song_list)
+    retval['playlists'] = lists
     return retval
 
 def get_playlist_by_id(plist_id, user_id):
@@ -159,6 +162,21 @@ def get_playlist_by_display_name(username):
     )
     cur = conn.cursor()
     sql = f"SELECT DISTINCT username, users.user_id, services, playlists.name, songs, image, pfp FROM userdata.playlists, userdata.users WHERE username LIKE '%{username}%'"
+    print(sql)
+    cur.execute(sql)
+    results = cur.fetchall()
+
+    return format_playlists(results)
+
+def get_all_playlists():
+    conn = psycopg2.connect(
+        host=DATABASE_HOST,
+        database=DATABASE_NAME,
+        user=DATABASE_USER,
+        password=DATABASE_PASSWORD
+    )
+    cur = conn.cursor()
+    sql = f"SELECT username, users.user_id, services, playlists.name, songs, image, pfp FROM userdata.playlists, userdata.users WHERE users.user_id = playlists.user_id"
     print(sql)
     cur.execute(sql)
     results = cur.fetchall()

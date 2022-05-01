@@ -119,6 +119,10 @@ def get_auth():
 def query_result(query: str):
     return handler.lib.querySpotify(query)
 
+@app.get("/all-playlists/")
+def all_playlists():
+    return dao.get_all_playlists()
+
 @app.get("/search/user/{username}")
 def name_result(username: str):
     return dao.get_playlist_by_display_name(username)
