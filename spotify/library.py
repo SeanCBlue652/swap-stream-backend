@@ -32,7 +32,7 @@ class Library:
         # user_name = self.user_name
         playlists = self.playlists
         my_dict = dict()
-        user_id = str(sp.current_user()['uri'])
+        user_id = str(sp.current_user()['id'])
         user_name = str(sp.current_user()['display_name'])
         stack = dict()
         the_plist = list()
