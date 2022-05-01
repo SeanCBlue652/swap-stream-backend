@@ -12,6 +12,13 @@ class Item(BaseModel):
     test: str
 
 class Playlist(BaseModel):
+    plist_id: str
+    user_id: int 
+    songs: list
+    name: str
+    image: str
+
+class CreatePlaylist(BaseModel):
     name: str
     songs: list
 
@@ -65,7 +72,7 @@ def read_item(user_id: int):
     return dao.get_user(user_id)
 
 @app.post("/spotify/add")
-def add_playlists(item: Playlist):
+def add_playlists(item: CreatePlaylist):
     handler.create()
     lib = handler.lib
     lib.initLib()
@@ -89,6 +96,12 @@ def send_playlists():
     lib.initLib()
     return lib.playlist_dict
 
+@app.post("/post-playlist/")
+def post_playlist(playlist: Playlist):
+    songs = dict()
+    songs['songs'] = playlist.songs
+    dao.store_playlist(playlist.plist_id, playlist.user_id, songs, playlist.name, playlist.image)
+    return playlist
 
 @app.post("/add-user/")
 def stuff_2(info: User):

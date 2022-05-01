@@ -56,6 +56,7 @@ class Library:
                 info_dict["info"] = list_entries
                 info_dict["image"] = image_entry
                 info_dict["profile_image"] = self.profile_image
+                info_dict["plist_id"] = playlist['id']
                 
                 entry.append(plist_name)
                 entry.append(info_dict)

@@ -161,7 +161,7 @@ def store_playlist(plist_id: int, user_id: int, songs: dict, name: str, image: s
     )
     cur = conn.cursor()
     insertion = json.dumps(songs)
-    sql = f"INSERT INTO userdata.playlists(plist_id, user_id, songs, name, image) VALUES({plist_id},{user_id}, '{insertion}','{name}','{image}');"
+    sql = f"INSERT INTO userdata.playlists(plist_id, user_id, songs, name, image) VALUES('{plist_id}',{user_id}, '{insertion}','{name}','{image}');"
     cur.execute(sql)
     conn.commit()
     cur.close()
