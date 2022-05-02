@@ -1,19 +1,22 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-import dao
-# import test
-import json
-
 from fastapi.middleware.cors import CORSMiddleware
-from spotify import library
+from pydantic import BaseModel
+
+import dao
 from spotify import auth_new
+from spotify import library
+
+
+# import test
+
 
 class Item(BaseModel):
     test: str
 
+
 class Playlist(BaseModel):
     plist_id: str
-    user_id: int 
+    user_id: int
     songs: list
     name: str
     image: str
@@ -23,23 +26,26 @@ class CreatePlaylist(BaseModel):
     name: str
     songs: list
 
+
 class User(BaseModel):
     user_id: int
     user_name: str
     service: str
     pfp: str
 
+
 class Handler:
     def __init__(self):
         self.sp = None
         self.lib = None
-    def create(self):    
+
+    def create(self):
         self.sp = auth_new.run()
         self.lib = library.Library(self.sp)
 
-handler = Handler()
-app = FastAPI() 
 
+handler = Handler()
+app = FastAPI()
 
 origins = [
     "http://localhost.tiangolo.com",
@@ -57,8 +63,6 @@ app.add_middleware(
 )
 
 
-
-
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -73,6 +77,7 @@ def stuff():
 def read_item(user_id: int):
     return dao.get_user(user_id)
 
+
 @app.post("/spotify/add")
 def add_playlists(item: CreatePlaylist):
     handler.create()
@@ -81,12 +86,14 @@ def add_playlists(item: CreatePlaylist):
     lib.addPlist(item.name, item.songs)
     return item
 
+
 @app.post("/spotify/add/copy")
 def add_playlist_copy(item: CreatePlaylist):
     handler.create()
     lib = handler.lib
     lib.copyPlaylist(item.name, item.songs)
-    return item 
+    return item
+
 
 @app.get("/spotify")
 def send_item():
@@ -100,45 +107,53 @@ def send_item():
     items['pfp'] = sp.current_user()['images'][0]['url']
     return items
 
+
 @app.get("/spotify/playlists")
 def send_playlists():
     lib = handler.lib
     lib.initLib()
     return lib.playlist_dict
 
+
 @app.post("/post-playlist/")
 def post_playlist(playlist: Playlist):
     songs = dict()
     songs['songs'] = playlist.songs
-    dao.store_playlist(playlist.plist_id, playlist.user_id, songs, playlist.name, playlist.image)
+    dao.store_playlist(int(playlist.plist_id), playlist.user_id, songs, playlist.name, playlist.image)
     return playlist
+
 
 @app.post("/add-user/")
 def stuff_2(info: User):
     dao.add_user(info.user_id, info.user_name, info.service, info.pfp)
     return info
 
+
 @app.get("/getAuth")
 def get_auth():
+    return {"Token": handler.lib.getToken()}
 
-    return {"Token":handler.lib.getToken()}
 
 @app.get("/spotify/{query}")
 def query_result(query: str):
     handler.create()
     return handler.lib.querySpotify(query)
 
+
 @app.get("/all-playlists/")
 def all_playlists():
     return dao.get_all_playlists()
+
 
 @app.get("/search/user/{username}")
 def name_result(username: str):
     return dao.get_playlist_by_display_name(username)
 
+
 @app.get("/search/user/playlist/{user_id}/{plist_id}")
 def id_result(user_id: int, plist_id: str):
     return dao.get_playlist_by_id(plist_id, user_id)
+
 
 @app.get("/search/spotify/{user_id}")
 def sp_plist(user_id: int):

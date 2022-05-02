@@ -36,23 +36,34 @@ def get_test_data():
 
 
 def add_user(user_id, user_name, service, pfp):
-    conn = psycopg2.connect(
-        host=DATABASE_HOST,
-        database=DATABASE_NAME,
-        user=DATABASE_USER,
-        password=DATABASE_PASSWORD)
-    cur = conn.cursor()
-    sql = f"INSERT INTO userdata.users(user_id, username, services, pfp) VALUES({user_id}, '{user_name}', '{service}', '{pfp}');"
-    cur.execute(sql)
-    conn.commit()
-    cur.close()
-    conn.close()
+    conn = None
+    try:
+        conn = psycopg2.connect(
+            host=DATABASE_HOST,
+            database=DATABASE_NAME,
+            user=DATABASE_USER,
+            password=DATABASE_PASSWORD)
+        cur = conn.cursor()
+        sql = f"INSERT INTO 'userdata'.'users'(user_id, username, services, pfp) VALUES({user_id}, {user_name}, {service}, {pfp}); "
+        cur.execute(sql)
+        conn.commit()
+        cur.close()
+        conn.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        return {"Error": str(error)}
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
+
 
 def formatUsers(results):
     item = results[0]
     retval = dict()
     retval['name'] = item[0]
     return retval
+
 
 def get_user(user_id):
     conn = psycopg2.connect(
@@ -66,6 +77,7 @@ def get_user(user_id):
     results = cur.fetchall()
 
     return formatUsers(results)
+
 
 def add_playlist(plist_id, user_id, title, service, owner):
     conn = psycopg2.connect(
@@ -96,7 +108,6 @@ def add_song(title, artist, service, url, index, plist_id):
 
 def make_dict(results: list) -> dict:
     my_dict = dict()
-    
 
     return my_dict
 
@@ -114,6 +125,7 @@ def get_playlist_by_user(user_id):
     results = cur.fetchall()
     ''' insert subroutine to sort it into proper dictionary'''
     return results
+
 
 def format_playlists(results):
     res = results
@@ -138,6 +150,7 @@ def format_playlists(results):
     retval['playlists'] = lists
     return retval
 
+
 def get_playlist_by_id(plist_id, user_id):
     conn = psycopg2.connect(
         host=DATABASE_HOST,
@@ -152,6 +165,7 @@ def get_playlist_by_id(plist_id, user_id):
     results = cur.fetchall()
 
     return format_playlists(results)
+
 
 def get_playlist_by_display_name(username):
     conn = psycopg2.connect(
@@ -168,6 +182,7 @@ def get_playlist_by_display_name(username):
 
     return format_playlists(results)
 
+
 def get_all_playlists():
     conn = psycopg2.connect(
         host=DATABASE_HOST,
@@ -183,10 +198,12 @@ def get_all_playlists():
 
     return format_playlists(results)
 
+
 def format_plist_id(results):
     my_dict = dict()
     my_dict['plist_id'] = [items[0] for items in results]
     return my_dict
+
 
 def get_spotify_plist_id(user_id: int):
     conn = psycopg2.connect(
@@ -202,6 +219,7 @@ def get_spotify_plist_id(user_id: int):
     results = cur.fetchall()
 
     return format_plist_id(results)
+
 
 def store_playlist(plist_id: int, user_id: int, songs: dict, name: str, image: str):
     conn = psycopg2.connect(
@@ -229,6 +247,7 @@ def store_playlist(plist_id: int, user_id: int, songs: dict, name: str, image: s
     cur.close()
     conn.close()
 
+
 def get_userdata():
     try:
         conn = psycopg2.connect(
@@ -250,4 +269,3 @@ def get_userdata():
         if conn is not None:
             conn.close()
             print('Database connection closed.')
-

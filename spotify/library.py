@@ -16,17 +16,11 @@ class Library:
         self.profile_image = ''
     
     def initLib(self):
-        print('1')
         sp = self.sp
-        print('2')
         self.user_id = str(sp.current_user()['id'])
-        print('3')
         self.user_name = str(sp.current_user()['display_name'])
-        print('4')
         print(self.user_name)
-        print('5')
         self.playlists = sp.current_user_playlists()
-        print(self.playlists)
         self.profile_image = sp.current_user()['images'][0]['url']
         # user_id = self.user_id
         # user_name = self.user_name
@@ -42,10 +36,19 @@ class Library:
         while playlists:
             for i, playlist in enumerate(playlists['items']):
                 # sp.playlist_add_items(playlist_id=playlist['id'],items=[link], position=None)
+                # item = sp.playlist_items(
+                #     playlist_id=playlist['id'],
+                #     fields=None, limit=None,
+                #     offset=0,
+                #     additional_types='track')
                 item = sp.playlist_tracks(
                     playlist['id'], fields=None, limit=None, offset=0)
                 image = sp.playlist_cover_image(playlist['id'])
-                image_entry = image[0]['url']
+                print("len(image)", len(image))
+                if len(image) > 0:
+                    image_entry = image[0]['url']
+                else:
+                    image_entry = 'https://upload.wikimedia.org/wikipedia/commons/7/74/Spotify_App_Logo.svg'
                 plist_name = str(playlist['name'])
                 entry = list()
 
