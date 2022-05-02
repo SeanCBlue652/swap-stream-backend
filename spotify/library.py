@@ -203,7 +203,8 @@ class Library:
             self.addPlistCopy(name, items)
         else:
             raise Exception("Playlist was not created.")
-
+        self.initLib()
+        return self.playlist_dict
 
     def addPlist(self, name: str, plist: list):
         this_list = self.sp.user_playlist_create(
@@ -223,6 +224,8 @@ class Library:
                 print(str(each[0]) + " could not be added to target playlist.")
         self.sp.playlist_add_items(
             playlist_id=this_list['id'], items=items, position=None)
+        self.initLib()
+        return self.playlist_dict
 
     def getToken(self):
         return self.sp.auth_manager.get_access_token(False, False)

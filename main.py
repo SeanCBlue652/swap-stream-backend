@@ -77,16 +77,16 @@ def read_item(user_id: int):
 def add_playlists(item: CreatePlaylist):
     handler.create()
     lib = handler.lib
-    # lib.initLib()
+    #lib.initLib()
     lib.addPlist(item.name, item.songs)
-    return item
+    return lib.playlist_dict
 
 @app.post("/spotify/add/copy")
 def add_playlist_copy(item: CreatePlaylist):
     handler.create()
     lib = handler.lib
     lib.copyPlaylist(item.name, item.songs)
-    return item 
+    return lib.playlist_dict
 
 @app.get("/spotify")
 def send_item():
